@@ -1,0 +1,62 @@
+---
+import { SITE } from '../consts';
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	imageAlt?: string;
+	type?: 'website' | 'article';
+	noindex?: boolean;
+}
+
+const {
+	title,
+	description = SITE.description,
+	image = SITE.ogImage,
+	imageAlt = SITE.ogImageAlt,
+	type = 'website',
+	noindex = false,
+} = Astro.props;
+
+const site = Astro.site ?? new URL(SITE.url);
+const fullTitle = title ? `${title} | ${SITE.name}` : SITE.name;
+const canonical = new URL(Astro.url.pathname, site).href;
+const imageUrl = new URL(image, site).href;
+
+const organization = {
+	'@context': 'https://schema.org',
+	'@type': 'Organization',
+	name: SITE.name,
+	url: site.href,
+	logo: new URL(SITE.logo, site).href,
+};
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content={SITE.locale} />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={imageAlt} />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={imageAlt} />
+
+<!-- Structured data -->
+<script type="application/ld+json" set:html={JSON.stringify(organization)} />

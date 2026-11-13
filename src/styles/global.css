@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens. `font-sans` uses the self-hosted Inter stack that Astro's
+ * <Font cssVariable="--font-inter" /> defines (fallbacks included).
+ */
+@theme {
+	--font-sans: var(--font-inter);
+	--color-ink: #0f1b2d;
+	--color-paper: #ffffff;
+	--color-muted: #4a5568;
+}
+
+@layer base {
+	html {
+		@apply bg-paper font-sans text-ink;
+		color-scheme: light;
+	}
+}

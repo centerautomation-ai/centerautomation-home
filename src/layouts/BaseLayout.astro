@@ -1,0 +1,54 @@
+---
+import { Font } from 'astro:assets';
+import Seo from '../components/Seo.astro';
+import Logo from '../components/Logo.astro';
+import { SITE } from '../consts';
+import '../styles/global.css';
+
+type Props = Parameters<typeof Seo>[0];
+
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+
+		<Seo {...Astro.props} />
+
+		<Font cssVariable="--font-inter" preload />
+
+		<link rel="icon" href="/favicon.ico" sizes="48x48" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<meta name="theme-color" content={SITE.themeColor} />
+	</head>
+	<body class="flex min-h-screen flex-col">
+		<a
+			href="#main"
+			class="sr-only z-10 bg-ink px-4 py-2 text-paper focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
+		>
+			Skip to content
+		</a>
+
+		<header class="flex items-center justify-between px-4 py-4 sm:px-8 lg:px-12">
+			<a href="/" class="inline-flex items-center gap-2.5 font-semibold" aria-label={`${SITE.name} home`}>
+				<Logo size={32} title="" />
+				<span>{SITE.name}</span>
+			</a>
+			<!-- Add <nav aria-label="Primary"> here once the site has more than one page. -->
+		</header>
+
+		<main id="main" class="flex-1">
+			<slot />
+		</main>
+
+		<footer class="px-4 py-4 text-sm text-muted sm:px-8 lg:px-12">
+			<p>&copy; {year} {SITE.name}</p>
+		</footer>
+	</body>
+</html>

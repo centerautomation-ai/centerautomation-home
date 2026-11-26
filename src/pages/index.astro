@@ -1,13 +1,325 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE } from '../consts';
+import { CTA } from '../consts';
+
+// A sample run shown in the hero card. Illustrative, not a customer case.
+const run = [
+	{ label: 'Lead submitted', detail: 'Website form' },
+	{ label: 'Company researched', detail: 'Size, industry, fit' },
+	{ label: 'Scored and routed', detail: 'High fit → Sales' },
+	{ label: 'CRM updated', detail: 'Contact + deal created' },
+	{ label: 'Follow-up drafted', detail: 'Awaiting rep approval' },
+];
+
+const promises = [
+	{ value: '1 week', label: 'to map your workflows and pick the first win' },
+	{ value: '30 days', label: 'to your first automation running in production' },
+	{ value: '100%', label: 'of actions reviewable, logged and reversible' },
+	{ value: '0', label: 'tools to replace. We build on what you use' },
+];
+
+const problems = [
+	{
+		pain: 'Your tools don’t talk to each other.',
+		answer: 'We connect them, so data moves on its own and nobody re-types it.',
+	},
+	{
+		pain: 'You know AI could help, but not where to start.',
+		answer: 'We rank your recurring tasks by hours saved and ease of build, then start at the top.',
+	},
+	{
+		pain: 'Past pilots never made it into daily work.',
+		answer: 'We ship one working automation at a time and measure it against a baseline.',
+	},
+];
+
+const services = [
+	{
+		team: 'Sales & CRM',
+		outcome: 'Faster follow-up. Cleaner pipeline.',
+		items: ['Lead capture, enrichment and routing', 'CRM hygiene and deduplication', 'Personalised follow-up drafts'],
+	},
+	{
+		team: 'Customer support',
+		outcome: 'Answers in minutes, not days.',
+		items: ['Ticket triage and tagging', 'AI-drafted replies from your knowledge base', 'Escalation to the right person'],
+	},
+	{
+		team: 'Finance & admin',
+		outcome: 'Fewer spreadsheets. Fewer late payments.',
+		items: ['Invoice and receipt extraction', 'Payment reminders and reconciliation', 'Month-end reporting packs'],
+	},
+	{
+		team: 'Operations',
+		outcome: 'Processes that run on their own.',
+		items: ['Order and inventory updates', 'Onboarding checklists for staff and clients', 'Scheduling and status notifications'],
+	},
+	{
+		team: 'Marketing',
+		outcome: 'More output, same team.',
+		items: ['Content repurposing across channels', 'Campaign and performance reports', 'Review and social monitoring'],
+	},
+	{
+		team: 'Internal knowledge',
+		outcome: 'Every answer, one question away.',
+		items: ['AI assistants trained on your documents', 'Meeting notes to tasks', 'Policy and process Q&A in Slack or Teams'],
+	},
+];
+
+const steps = [
+	{ when: 'Week 1', title: 'Audit and rank', text: 'We map your recurring work, rank it by value and effort, and agree on one number to move.' },
+	{ when: 'Weeks 2–3', title: 'Build with a human in the loop', text: 'The automation drafts and proposes. Your team reviews each step before anything is sent or changed.' },
+	{ when: 'Week 4', title: 'Go live', text: 'Routine cases run on their own. Edge cases reach the right person with full context.' },
+	{ when: 'Month 2+', title: 'Measure and expand', text: 'We report hours saved against the baseline, then take on the next workflow, faster each time.' },
+];
+
+const reasons = [
+	{ title: 'Trust is earned, step by step', text: 'Every automation starts in review mode. It only acts on its own once your team is confident in it.' },
+	{ title: 'Built on your stack', text: 'We connect the tools you already pay for. No rip-and-replace, no new logins for your team.' },
+	{ title: 'Measured in hours, not hype', text: 'We agree on a baseline up front and report the time and cost saved in plain numbers.' },
+	{ title: 'Secure by default', text: 'Least-privilege access, audit logs for every action, and your data never used to train public models.' },
+	{ title: 'You own what we build', text: 'Documentation, credentials and workflows stay with you. No lock-in.' },
+	{ title: 'One partner, end to end', text: 'Strategy, build, launch and support from the same small team that knows your business.' },
+];
+
+const tools = [
+	'Google Workspace', 'Microsoft 365', 'Slack', 'HubSpot', 'Salesforce', 'Pipedrive', 'Notion', 'Airtable',
+	'Shopify', 'Stripe', 'QuickBooks', 'Xero', 'Zendesk', 'n8n', 'Make', 'Zapier', 'OpenAI', 'Claude',
+];
+
+const faqs = [
+	{
+		q: 'What kind of work can you automate?',
+		a: 'Anything that is repetitive, rule-based or text-heavy: moving data between tools, sorting emails and tickets, drafting replies, extracting data from documents, building reports. If your team does it every week the same way, it is a good candidate.',
+	},
+	{
+		q: 'Do we need technical staff?',
+		a: 'No. We handle the build, hosting and maintenance. Your team only needs to tell us how the work is done today and review the results.',
+	},
+	{
+		q: 'What does the free audit include?',
+		a: 'A 45-minute call where we walk through your workflows, followed by a short written list of the automations we would build first, with estimated time saved for each.',
+	},
+	{
+		q: 'Is our data safe?',
+		a: 'We use least-privilege access, keep audit logs of every action, and use AI providers that do not train on your data. Sensitive steps always stay with a human approver.',
+	},
+	{
+		q: 'What does it cost?',
+		a: 'Projects are scoped and priced per workflow after the audit, so you know the cost and the expected savings before we start. Ongoing support is a simple monthly fee.',
+	},
+];
+
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqs.map((f) => ({
+		'@type': 'Question',
+		name: f.q,
+		acceptedAnswer: { '@type': 'Answer', text: f.a },
+	})),
+};
 ---
 
-<BaseLayout>
-	<section class="mx-auto max-w-3xl px-4 py-16 sm:px-8 sm:py-24 lg:py-32" aria-labelledby="hero-title">
-		<h1 id="hero-title" class="mb-4 text-4xl leading-tight font-bold tracking-tight sm:text-5xl lg:text-6xl">
-			{SITE.name}
-		</h1>
-		<p class="text-lg text-muted">{SITE.description}</p>
+<BaseLayout jsonLd={[faqSchema]}>
+	<!-- Hero -->
+	<section aria-labelledby="hero-title" class="relative overflow-hidden">
+		<div
+			class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60rem_30rem_at_80%_-10%,var(--color-accent-soft),transparent)]"
+			aria-hidden="true"
+		></div>
+		<div class="container-page grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[1.1fr_1fr] lg:py-28">
+			<div>
+				<p class="eyebrow">AI automation for growing teams</p>
+				<h1 id="hero-title" class="mt-4 text-4xl leading-[1.05] font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+					The busywork, handled.
+				</h1>
+				<p class="mt-6 max-w-xl text-lg text-muted">
+					We build AI-powered automations that take repetitive work off your team’s plate, inside the tools you
+					already use. Your people keep the judgment calls. The rest runs on its own.
+				</p>
+				<div class="mt-8 flex flex-wrap gap-3">
+					<a href={CTA.href} class="btn-primary">{CTA.label}</a>
+					<a href="#process" class="btn-secondary">See how it works</a>
+				</div>
+			</div>
+
+			<!-- Automation at work -->
+			<figure class="rounded-3xl border border-line bg-paper p-6 shadow-[0_20px_60px_-20px_rgba(15,27,45,0.25)] sm:p-8">
+				<figcaption class="flex items-center justify-between text-sm">
+					<span class="text-muted">An automation at work · Sales</span>
+					<span class="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-semibold text-accent">
+						<span class="size-1.5 animate-pulse rounded-full bg-accent"></span> Live
+					</span>
+				</figcaption>
+				<p class="mt-4 text-lg font-semibold">New inbound lead</p>
+				<p class="text-sm text-muted">Example run</p>
+				<ol class="mt-6 space-y-3">
+					{run.map((step, i) => (
+						<li class="run-step flex items-center gap-3 rounded-xl bg-mist px-4 py-3" style={`--i:${i}`}>
+							<span class="flex size-6 shrink-0 items-center justify-center rounded-full bg-success text-white" aria-hidden="true">
+								<svg viewBox="0 0 16 16" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3.5 8.5l3 3 6-7" /></svg>
+							</span>
+							<span class="flex-1 text-sm font-medium">{step.label}</span>
+							<span class="text-xs text-muted">{step.detail}</span>
+						</li>
+					))}
+				</ol>
+				<div class="run-step mt-5 flex items-center justify-between border-t border-line pt-4 text-sm" style={`--i:${run.length}`}>
+					<span class="text-muted">Time to first response</span>
+					<span class="rounded-full bg-success-soft px-2.5 py-1 font-semibold text-success">2 min, not 2 days</span>
+				</div>
+			</figure>
+		</div>
+	</section>
+
+	<!-- Promises -->
+	<section aria-label="Our commitments" class="border-y border-line bg-mist">
+		<dl class="container-page grid grid-cols-2 gap-8 py-10 lg:grid-cols-4">
+			{promises.map((p) => (
+				<div>
+					<dt class="sr-only">{p.label}</dt>
+					<dd class="text-3xl font-bold tracking-tight">{p.value}</dd>
+					<dd class="mt-1 text-sm text-muted">{p.label}</dd>
+				</div>
+			))}
+		</dl>
+	</section>
+
+	<!-- Problem -->
+	<section aria-labelledby="problem-title" class="container-page py-20 sm:py-28">
+		<div class="max-w-2xl">
+			<p class="eyebrow">The problem</p>
+			<h2 id="problem-title" class="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+				Your team wasn’t hired to copy and paste.
+			</h2>
+			<p class="mt-4 text-lg text-muted">
+				Every growing business hits the same wall: more customers, more tools, and more hours lost to work that
+				nobody enjoys. We fix that.
+			</p>
+		</div>
+		<div class="mt-12 grid gap-6 md:grid-cols-3">
+			{problems.map((p) => (
+				<div class="rounded-2xl border border-line p-6">
+					<p class="font-semibold">{p.pain}</p>
+					<p class="mt-3 text-muted">{p.answer}</p>
+				</div>
+			))}
+		</div>
+	</section>
+
+	<!-- Services -->
+	<section id="services" aria-labelledby="services-title" class="bg-mist py-20 sm:py-28">
+		<div class="container-page">
+			<div class="max-w-2xl">
+				<p class="eyebrow">Services</p>
+				<h2 id="services-title" class="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+					Work we take off your desk.
+				</h2>
+				<p class="mt-4 text-lg text-muted">Automations for the teams that own the work, each one starting in review mode.</p>
+			</div>
+			<div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+				{services.map((s) => (
+					<article class="flex flex-col rounded-2xl border border-line bg-paper p-6">
+						<h3 class="text-lg font-semibold">{s.team}</h3>
+						<p class="mt-1 text-muted">{s.outcome}</p>
+						<ul class="mt-5 space-y-2.5 border-t border-line pt-5 text-sm">
+							{s.items.map((item) => (
+								<li class="flex gap-2.5">
+									<span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
+									{item}
+								</li>
+							))}
+						</ul>
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- Process -->
+	<section id="process" aria-labelledby="process-title" class="bg-ink py-20 text-white sm:py-28">
+		<div class="container-page">
+			<div class="max-w-2xl">
+				<p class="eyebrow text-[#9db4ff]">How it works</p>
+				<h2 id="process-title" class="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+					First results in weeks, not quarters.
+				</h2>
+				<p class="mt-4 text-lg text-white/70">One workflow, one owner on your side, one number to move.</p>
+			</div>
+			<ol class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+				{steps.map((s, i) => (
+					<li class="rounded-2xl border border-white/10 bg-ink-soft p-6">
+						<p class="text-sm font-semibold text-[#9db4ff]">{s.when}</p>
+						<h3 class="mt-3 text-lg font-semibold">
+							<span class="text-white/40">{String(i + 1).padStart(2, '0')}</span> {s.title}
+						</h3>
+						<p class="mt-2 text-sm text-white/70">{s.text}</p>
+					</li>
+				))}
+			</ol>
+		</div>
+	</section>
+
+	<!-- Why us -->
+	<section id="why" aria-labelledby="why-title" class="container-page py-20 sm:py-28">
+		<div class="max-w-2xl">
+			<p class="eyebrow">Why Center Automation</p>
+			<h2 id="why-title" class="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+				Automation you can trust with real work.
+			</h2>
+		</div>
+		<div class="mt-12 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+			{reasons.map((r) => (
+				<div class="border-l-2 border-accent pl-5">
+					<h3 class="font-semibold">{r.title}</h3>
+					<p class="mt-2 text-muted">{r.text}</p>
+				</div>
+			))}
+		</div>
+	</section>
+
+	<!-- Tools -->
+	<section aria-labelledby="tools-title" class="border-y border-line bg-mist py-16">
+		<div class="container-page">
+			<h2 id="tools-title" class="text-xl font-semibold">Works with the tools you already use</h2>
+			<ul class="mt-6 flex flex-wrap gap-2.5">
+				{tools.map((t) => <li class="rounded-full border border-line bg-paper px-4 py-2 text-sm">{t}</li>)}
+				<li class="rounded-full px-4 py-2 text-sm text-muted">and anything with an API</li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- FAQ -->
+	<section id="faq" aria-labelledby="faq-title" class="container-page grid gap-10 py-20 sm:py-28 lg:grid-cols-[1fr_2fr]">
+		<div>
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-title" class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Good questions.</h2>
+		</div>
+		<div class="divide-y divide-line border-y border-line">
+			{faqs.map((f) => (
+				<details class="group py-5">
+					<summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold [&::-webkit-details-marker]:hidden">
+						{f.q}
+						<span class="text-xl text-muted transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+					</summary>
+					<p class="mt-3 text-muted">{f.a}</p>
+				</details>
+			))}
+		</div>
+	</section>
+
+	<!-- Final CTA -->
+	<section aria-labelledby="cta-title" class="container-page pb-20 sm:pb-28">
+		<div class="rounded-3xl bg-ink px-6 py-14 text-center text-white sm:px-12 sm:py-20">
+			<h2 id="cta-title" class="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+				What’s the task your team dreads most?
+			</h2>
+			<p class="mx-auto mt-4 max-w-xl text-lg text-white/70">
+				Tell us about it. In a free 45-minute audit, we’ll show you how it could run on its own, and what that
+				would save you.
+			</p>
+			<a href={CTA.href} class="btn-inverse mt-8">{CTA.label}</a>
+		</div>
 	</section>
 </BaseLayout>

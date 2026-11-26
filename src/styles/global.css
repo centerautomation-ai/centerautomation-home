@@ -7,13 +7,73 @@
 @theme {
 	--font-sans: var(--font-inter);
 	--color-ink: #0f1b2d;
+	--color-ink-soft: #1b2a42;
 	--color-paper: #ffffff;
+	--color-mist: #f4f6f9;
+	--color-line: #e2e7ee;
 	--color-muted: #4a5568;
+	--color-accent: #2f5bea;
+	--color-accent-strong: #2246c4;
+	--color-accent-soft: #eaf0ff;
+	--color-success: #1e7a4c;
+	--color-success-soft: #e7f5ee;
 }
 
 @layer base {
 	html {
 		@apply bg-paper font-sans text-ink;
 		color-scheme: light;
+		scroll-behavior: smooth;
+		scroll-padding-top: 5rem;
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 3px;
+	}
+}
+
+@utility btn {
+	@apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors;
+}
+@utility btn-primary {
+	@apply btn bg-accent text-white hover:bg-accent-strong;
+}
+@utility btn-secondary {
+	@apply btn border border-line bg-paper text-ink hover:border-ink/30;
+}
+@utility btn-inverse {
+	@apply btn bg-white text-ink hover:bg-mist;
+}
+@utility eyebrow {
+	@apply text-xs font-semibold tracking-[0.14em] text-accent uppercase;
+}
+@utility container-page {
+	@apply mx-auto w-full max-w-6xl px-4 sm:px-8;
+}
+
+/* Hero "automation at work" card: steps tick off one after another. */
+@keyframes step-in {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.run-step {
+	animation: step-in 0.45s ease-out both;
+	animation-delay: calc(var(--i) * 0.7s + 0.3s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	.run-step {
+		animation: none;
 	}
 }

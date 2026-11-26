@@ -139,7 +139,7 @@ const faqSchema = {
 					already use. Your people keep the judgment calls. The rest runs on its own.
 				</p>
 				<div class="mt-8 flex flex-wrap gap-3">
-					<a href={CTA.href} class="btn-primary">{CTA.label}</a>
+					<a href={CTA.href} target={CTA.external ? "_blank" : undefined} rel={CTA.external ? "noopener" : undefined} class="btn-primary">{CTA.label}</a>
 					<a href="#process" class="btn-secondary">See how it works</a>
 				</div>
 			</div>
@@ -319,7 +319,7 @@ const faqSchema = {
 				Tell us about it. In a free 45-minute audit, we’ll show you how it could run on its own, and what that
 				would save you.
 			</p>
-			<a href={CTA.href} class="btn-inverse mt-8">{CTA.label}</a>
+			<a href={CTA.href} target={CTA.external ? "_blank" : undefined} rel={CTA.external ? "noopener" : undefined} class="btn-inverse mt-8">{CTA.label}</a>
 		</div>
 	</section>
 </BaseLayout>

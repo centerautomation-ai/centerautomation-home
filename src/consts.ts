@@ -9,14 +9,19 @@ export const SITE = {
 	ogImageAlt: 'Center Automation logo on a dark navy background',
 	locale: 'en_US',
 	themeColor: '#FFFFFF',
-	// TODO: confirm this inbox exists (or swap in a booking link, e.g. Cal.com / Calendly).
-	email: 'hello@centerautomation.ai',
+	email: 'info@centerautomation.ai',
+	// Paste a Cal.com / Calendly / Google Calendar booking page URL here. When set, every
+	// "Book a free audit" button opens it; when empty, the buttons fall back to email.
+	bookingUrl: '',
 } as const;
 
 /** Primary call to action used across the site. */
+const bookingUrl: string = SITE.bookingUrl;
+
 export const CTA = {
 	label: 'Book a free audit',
-	href: `mailto:${SITE.email}?subject=${encodeURIComponent('Free automation audit')}`,
+	href: bookingUrl || `mailto:${SITE.email}?subject=${encodeURIComponent('Free automation audit')}`,
+	external: Boolean(bookingUrl),
 } as const;
 
 export const NAV = [

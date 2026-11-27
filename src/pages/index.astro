@@ -1,10 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Logo from '../components/Logo.astro';
+import DemoSection from '../components/DemoSection.astro';
 import { CTA } from '../consts';
 
-const ctaTarget = CTA.external ? '_blank' : undefined;
-const ctaRel = CTA.external ? 'noopener' : undefined;
 
 // A sample run shown in the hero card. Illustrative, not a customer case.
 const run = [
@@ -13,13 +12,6 @@ const run = [
 	{ label: 'CRM updated', detail: 'Contact + deal' },
 	{ label: 'Reply approved', detail: 'Sales rep' },
 	{ label: 'Sent and logged', detail: 'Done' },
-];
-
-const promises = [
-	{ value: '1 wk', label: 'to map your workflows and pick the first win' },
-	{ value: '30 d', label: 'to your first automation running in production' },
-	{ value: '100%', label: 'of automated actions logged and reviewable' },
-	{ value: '0', label: 'tools to replace. We build on what you use' },
 ];
 
 const audiences = [
@@ -124,9 +116,9 @@ const stack = [
 const faqs = [
 	{ q: 'What kind of work can you automate?', a: 'Anything repetitive, rule-based or text-heavy: moving data between tools, sorting emails and tickets, drafting replies, extracting data from documents, building reports. If your team does it every week the same way, it is a good candidate.' },
 	{ q: 'Do we need technical staff?', a: 'No. We handle the build, hosting and maintenance. Your team only needs to show us how the work is done today and review the results.' },
-	{ q: 'What does the free audit include?', a: 'A 45-minute call where we walk through your workflows, followed by a short written list of the automations we would build first, with estimated time saved for each.' },
+	{ q: 'What happens on the demo call?', a: 'A 45-minute call where we walk through your workflows and show how an automation would handle one of them. Afterwards you get a short written list of the automations we would build first, with estimated time saved for each.' },
 	{ q: 'Is our data safe?', a: 'We use least-privilege access, keep a log of every action, and use AI providers that do not train on your data. Sensitive steps always stay with a human approver.' },
-	{ q: 'What does it cost?', a: 'Projects are scoped and priced per workflow after the audit, so you know the cost and the expected savings before we start. Ongoing support is a simple monthly fee.' },
+	{ q: 'What does it cost?', a: 'Projects are scoped and priced per workflow after the demo call, so you know the cost and the expected savings before we start. Ongoing support is a simple monthly fee.' },
 ];
 
 const faqSchema = {
@@ -150,7 +142,7 @@ const check = 'M3.5 8.5l3 3 6-7';
 				your people approving every step until it’s proven.
 			</p>
 			<div class="mt-9 flex flex-wrap gap-3">
-				<a href={CTA.href} target={ctaTarget} rel={ctaRel} class="btn-primary">{CTA.label}</a>
+				<a href={CTA.href} class="btn-primary">{CTA.label}</a>
 				<a href="#platform" class="btn-outline">See how we build</a>
 			</div>
 		</div>
@@ -184,20 +176,9 @@ const check = 'M3.5 8.5l3 3 6-7';
 		</div>
 	</section>
 
-	<!-- Commitments -->
-	<section aria-labelledby="promises-title" class="container-page pb-20">
-		<h2 id="promises-title" class="sr-only">Our commitments</h2>
-		<dl class="grid grid-cols-2 border-y border-line lg:grid-cols-4">
-			{promises.map((p, i) => (
-				<div class:list={['flex flex-col gap-3 py-8 pr-6', i % 2 === 1 && 'border-l border-line pl-6', i >= 2 && 'border-t border-line lg:border-t-0', i === 2 && 'lg:border-l lg:pl-6']}>
-					<dt class="order-2 text-[15px] text-muted">{p.label}</dt>
-					<dd class="order-1 text-5xl font-semibold tracking-[-0.03em] text-accent sm:text-6xl">{p.value}</dd>
-				</div>
-			))}
-		</dl>
-		<p class="mt-4 text-sm text-subtle">What every engagement commits to.</p>
-
-		<h2 class="h-section mt-20">Built for teams like yours.</h2>
+	<!-- Audiences -->
+	<section aria-labelledby="audience-title" class="container-page pb-20">
+		<h2 id="audience-title" class="h-section">Built for teams like yours.</h2>
 		<ul class="mt-8 flex flex-wrap gap-2.5">
 			{audiences.map((a) => <li class="chip">{a}</li>)}
 		</ul>
@@ -234,7 +215,7 @@ const check = 'M3.5 8.5l3 3 6-7';
 					<h2 id="platform-title" class="h-section">One foundation for every automation.</h2>
 					<p class="lead mt-5">Triggers, AI, approvals and logs, built the same way every time. Click any part to see what it does.</p>
 				</div>
-				<a href={CTA.href} target={ctaTarget} rel={ctaRel} class="link-arrow">Talk to us <span aria-hidden="true">→</span></a>
+				<a href={CTA.href} class="link-arrow">Talk to us <span aria-hidden="true">→</span></a>
 			</div>
 
 			<div class="mt-12 grid gap-6 lg:grid-cols-[1.45fr_1fr]" data-layers>
@@ -298,7 +279,7 @@ const check = 'M3.5 8.5l3 3 6-7';
 					<h2 id="services-title" class="h-section">What we automate.</h2>
 					<p class="lead mt-5">Automations for the teams that own the work. Each one starts in review mode and earns the right to act.</p>
 				</div>
-				<a href={CTA.href} target={ctaTarget} rel={ctaRel} class="link-arrow">Find your first win <span aria-hidden="true">→</span></a>
+				<a href={CTA.href} class="link-arrow">Find your first win <span aria-hidden="true">→</span></a>
 			</div>
 			<div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
 				{services.map((s) => (
@@ -370,7 +351,7 @@ const check = 'M3.5 8.5l3 3 6-7';
 		<div class="container-page grid gap-10 lg:grid-cols-[1fr_1.6fr]">
 			<div>
 				<h2 id="faq-title" class="h-section">Good questions.</h2>
-				<p class="lead mt-5">Anything else? Write to us and a person will answer.</p>
+				<p class="lead mt-5">Anything else? <a href="#demo" class="text-accent underline underline-offset-4">Send us a message</a> and a person will answer.</p>
 			</div>
 			<div class="border-b border-line">
 				{faqs.map((f) => (
@@ -386,27 +367,7 @@ const check = 'M3.5 8.5l3 3 6-7';
 		</div>
 	</section>
 
-	<!-- Final CTA -->
-	<section aria-labelledby="cta-title" class="border-t border-line bg-paper py-16 sm:py-20">
-		<div class="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-			<div class="relative aspect-[4/3] overflow-hidden rounded-2xl bg-canvas lg:aspect-[3/3.4]" aria-hidden="true">
-				<div class="absolute top-0 left-0 h-[46%] w-[46%] bg-turquoise"></div>
-				<div class="absolute top-[46%] left-0 h-[54%] w-[30%] bg-ink"></div>
-				<div class="absolute top-[46%] left-[30%] h-[22%] w-[16%] bg-[#6b7380]"></div>
-				<Logo size={360} title="" class="absolute right-[-12%] bottom-[-14%] text-navy" />
-			</div>
-			<div>
-				<h2 id="cta-title" class="text-5xl leading-[1.05] font-semibold tracking-[-0.025em] sm:text-6xl">
-					Let’s take work off your plate.
-				</h2>
-				<p class="lead mt-6 max-w-lg">
-					Tell us the task your team dreads most. In a free 45-minute audit, we’ll show you how it could run on its
-					own and what that would save you.
-				</p>
-				<a href={CTA.href} target={ctaTarget} rel={ctaRel} class="btn-primary mt-9">{CTA.label}</a>
-			</div>
-		</div>
-	</section>
+	<DemoSection />
 <style>
 		@reference "../styles/global.css";
 

@@ -8,8 +8,6 @@ import '../styles/global.css';
 type Props = Parameters<typeof Seo>[0];
 
 const year = new Date().getFullYear();
-const ctaTarget = CTA.external ? '_blank' : undefined;
-const ctaRel = CTA.external ? 'noopener' : undefined;
 
 const footerColumns = [
 	{
@@ -80,7 +78,7 @@ const footerColumns = [
 				</div>
 
 				<div class="flex items-center gap-2">
-					<a href={CTA.href} target={ctaTarget} rel={ctaRel} class="btn-primary hidden sm:inline-flex">{CTA.label}</a>
+					<a href={CTA.href} class="btn-primary hidden sm:inline-flex">{CTA.label}</a>
 
 					<details class="group relative lg:hidden">
 						<summary
@@ -92,7 +90,7 @@ const footerColumns = [
 						</summary>
 						<nav aria-label="Mobile" class="card absolute right-0 mt-2 flex w-60 flex-col p-2 shadow-xl">
 							{NAV.map((item) => <a href={`/${item.href}`} class="rounded-lg px-3 py-2.5 hover:bg-canvas">{item.label}</a>)}
-							<a href={CTA.href} target={ctaTarget} rel={ctaRel} class="btn-primary mt-2">{CTA.label}</a>
+							<a href={CTA.href} class="btn-primary mt-2">{CTA.label}</a>
 						</nav>
 					</details>
 				</div>

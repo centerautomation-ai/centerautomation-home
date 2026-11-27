@@ -16,13 +16,13 @@ export default defineConfig({
 	fonts: [
 		{
 			provider: fontProviders.fontsource(),
-			name: 'Inter',
-			cssVariable: '--font-inter',
+			name: 'Instrument Sans',
+			cssVariable: '--font-brand',
 			weights: ['400 700'],
 			styles: ['normal'],
 			subsets: ['latin'],
 			display: 'swap',
-			fallbacks: ['system-ui', 'sans-serif'],
+			fallbacks: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
 		},
 	],
 });

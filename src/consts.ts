@@ -26,7 +26,8 @@ export const CTA = {
 
 export const NAV = [
 	{ label: 'Services', href: '#services' },
-	{ label: 'How it works', href: '#process' },
+	{ label: 'How we build', href: '#platform' },
+	{ label: 'Process', href: '#process' },
 	{ label: 'Why us', href: '#why' },
 	{ label: 'FAQ', href: '#faq' },
 ] as const;

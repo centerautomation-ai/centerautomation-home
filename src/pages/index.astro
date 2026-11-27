@@ -1,13 +1,402 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE } from '../consts';
+import Logo from '../components/Logo.astro';
+import DemoSection from '../components/DemoSection.astro';
+import { CTA } from '../consts';
+
+
+// A sample run shown in the hero card. Illustrative, not a customer case.
+const run = [
+	{ label: 'Lead researched', detail: 'Size, industry, fit' },
+	{ label: 'Scored and routed', detail: 'High fit → Sales' },
+	{ label: 'CRM updated', detail: 'Contact + deal' },
+	{ label: 'Reply approved', detail: 'Sales rep' },
+	{ label: 'Sent and logged', detail: 'Done' },
+];
+
+const audiences = [
+	'Agencies and consultancies',
+	'E-commerce brands',
+	'Accounting and bookkeeping firms',
+	'Real estate teams',
+	'Clinics and practices',
+	'B2B service companies',
+	'SaaS startups',
+	'Logistics and distribution',
+	'Recruiting firms',
+	'Property managers',
+];
+
+const problems = [
+	{ pain: 'Your tools don’t talk to each other.', answer: 'We connect them, so data moves on its own and nobody re-types it.' },
+	{ pain: 'You know AI could help, but not where to start.', answer: 'We rank your recurring tasks by hours saved and ease of build. Then we build the top one.' },
+	{ pain: 'Past pilots never made it into daily work.', answer: 'We ship one working automation at a time and measure it against a baseline.' },
+];
+
+// Interactive "how we build" diagram. `key` links a tile to its detail panel.
+const layers = {
+	triggers: {
+		title: 'Triggers',
+		sub: 'Form, email, schedule, webhook',
+		headline: 'Work starts the moment it arrives.',
+		points: ['A new email, form, order or ticket starts the run', 'Scheduled jobs for daily and month-end work', 'Webhooks from any app with an API'],
+	},
+	ai: {
+		title: 'AI steps',
+		sub: 'Read, classify, extract, draft',
+		headline: 'The repetitive thinking, done in seconds.',
+		points: ['Read documents and pull out the fields you need', 'Sort and prioritise requests by your own rules', 'Draft replies and summaries in your tone'],
+	},
+	approvals: {
+		title: 'Approvals',
+		sub: 'Your team signs off',
+		headline: 'You set the rules. Every automation follows them.',
+		points: ['Approve or edit in Slack, Teams or email', 'Sensitive steps always need a person', 'Automations earn more autonomy as they prove reliable'],
+	},
+	actions: {
+		title: 'Actions',
+		sub: 'Update, send, file, notify',
+		headline: 'Changes land where your team already works.',
+		points: ['Update the CRM, accounting tool or spreadsheet', 'Send emails and messages from your own accounts', 'Create tasks and notify the right person'],
+	},
+	logs: {
+		title: 'Logs and alerts',
+		sub: 'Every run recorded',
+		headline: 'Nothing happens out of sight.',
+		points: ['A full history of what ran, when and why', 'Alerts when something fails or looks unusual', 'Monthly report of hours and cost saved'],
+	},
+	connections: {
+		title: 'Connections',
+		sub: 'Your apps and data',
+		headline: 'Built on the tools you already pay for.',
+		points: ['Google Workspace, Microsoft 365, CRMs, accounting tools', 'Least-privilege access per automation', 'Credentials stay in your accounts'],
+	},
+	foundation: {
+		title: 'Foundation',
+		sub: 'Security · access · documentation · support',
+		headline: 'Solid ground under every workflow.',
+		points: ['Encrypted credentials and access reviews', 'Documentation and handover for every build', 'Monitoring and support after launch'],
+	},
+} as const;
+type LayerKey = keyof typeof layers;
+const defaultLayer: LayerKey = 'approvals';
+
+const services = [
+	{ team: 'Sales & CRM', outcome: 'Faster follow-up. Cleaner pipeline.', items: ['Lead capture, enrichment and routing', 'CRM hygiene and deduplication', 'Personalised follow-up drafts'] },
+	{ team: 'Customer support', outcome: 'Answers in minutes, not days.', items: ['Ticket triage and tagging', 'Replies drafted from your knowledge base', 'Escalation to the right person'] },
+	{ team: 'Finance & admin', outcome: 'Fewer spreadsheets. Fewer late payments.', items: ['Invoice and receipt extraction', 'Payment reminders and reconciliation', 'Month-end reporting packs'] },
+	{ team: 'Operations', outcome: 'Processes that run on their own.', items: ['Order and inventory updates', 'Onboarding checklists for staff and clients', 'Scheduling and status notifications'] },
+	{ team: 'Marketing', outcome: 'More output, same team.', items: ['Content repurposing across channels', 'Campaign and performance reports', 'Review and social monitoring'] },
+	{ team: 'Internal knowledge', outcome: 'Every answer, one question away.', items: ['AI assistants trained on your documents', 'Meeting notes turned into tasks', 'Policy and process Q&A in Slack or Teams'] },
+];
+
+const steps = [
+	{ when: 'Week 1', title: 'Audit and rank', text: 'We map your recurring work, rank it by value and effort, and agree on one number to move.' },
+	{ when: 'Weeks 2 to 3', title: 'Build in review mode', text: 'The automation drafts and proposes. Your team approves each step before anything is sent.' },
+	{ when: 'Week 4', title: 'Go live', text: 'Routine cases run on their own. Edge cases reach the right person with full context.' },
+	{ when: 'Month 2', title: 'Measure', text: 'We report hours saved against the baseline. More autonomy is granted case by case.' },
+	{ when: 'Month 3+', title: 'Expand', text: 'The next workflow goes live on the same foundation, faster and cheaper.' },
+];
+
+const reasons = [
+	{ title: 'Trust earned step by step', text: 'Every automation starts in review mode and only acts on its own once your team is confident in it.' },
+	{ title: 'Built on your stack', text: 'We connect the tools you already pay for. No rip-and-replace and no new logins for your team.' },
+	{ title: 'Measured in hours', text: 'We agree on a baseline up front and report time and cost saved in plain numbers.' },
+	{ title: 'Secure by default', text: 'Least-privilege access, a log of every action, and AI providers that don’t train on your data.' },
+	{ title: 'You own what we build', text: 'Documentation, credentials and workflows stay with you. No lock-in.' },
+	{ title: 'One partner, end to end', text: 'Audit, build, launch and support from the same small team that knows your business.' },
+];
+
+const stack = [
+	{ title: 'Business apps', main: ['Google Workspace', 'Microsoft 365'], rest: ['HubSpot', 'Salesforce', 'Pipedrive', 'Notion', 'Airtable', 'Shopify', 'Stripe', 'QuickBooks', 'Xero', 'Zendesk', 'Slack'] },
+	{ title: 'AI models', main: ['Claude', 'OpenAI'], rest: ['Gemini', 'Mistral', 'Open-source models'] },
+	{ title: 'Automation platforms', main: ['n8n', 'Make'], rest: ['Zapier', 'Power Automate', 'Custom code', 'Any REST API'] },
+];
+
+const faqs = [
+	{ q: 'What kind of work can you automate?', a: 'Anything repetitive, rule-based or text-heavy: moving data between tools, sorting emails and tickets, drafting replies, extracting data from documents, building reports. If your team does it every week the same way, it is a good candidate.' },
+	{ q: 'Do we need technical staff?', a: 'No. We handle the build, hosting and maintenance. Your team only needs to show us how the work is done today and review the results.' },
+	{ q: 'What happens on the demo call?', a: 'A 30-minute call where we walk through your workflows and show how an automation would handle one of them. Afterwards you get a short written list of the automations we would build first, with estimated time saved for each.' },
+	{ q: 'Is our data safe?', a: 'We use least-privilege access, keep a log of every action, and use AI providers that do not train on your data. Sensitive steps always stay with a human approver.' },
+	{ q: 'What does it cost?', a: 'Projects are scoped and priced per workflow after the demo call, so you know the cost and the expected savings before we start. Ongoing support is a simple monthly fee.' },
+];
+
+const faqSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+
+const check = 'M3.5 8.5l3 3 6-7';
 ---
 
-<BaseLayout>
-	<section class="mx-auto max-w-3xl px-4 py-16 sm:px-8 sm:py-24 lg:py-32" aria-labelledby="hero-title">
-		<h1 id="hero-title" class="mb-4 text-4xl leading-tight font-bold tracking-tight sm:text-5xl lg:text-6xl">
-			{SITE.name}
-		</h1>
-		<p class="text-lg text-muted">{SITE.description}</p>
+<BaseLayout jsonLd={[faqSchema]}>
+	<!-- Hero -->
+	<section aria-labelledby="hero-title" class="container-page grid items-center gap-14 pt-12 pb-20 sm:pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:pt-20 lg:pb-28">
+		<div>
+			<h1 id="hero-title" class="text-[3.25rem] leading-[1.02] font-semibold tracking-[-0.025em] sm:text-7xl lg:text-[5.25rem]">
+				Busywork, automated.
+			</h1>
+			<p class="lead mt-7 max-w-xl">
+				AI automations that take repetitive work off your team’s plate. Built inside the tools you already use, with
+				your people approving every step until it’s proven.
+			</p>
+			<div class="mt-9 flex flex-wrap gap-3">
+				<a href={CTA.href} class="btn-primary">{CTA.label}</a>
+				<a href="#platform" class="btn-outline">See how we build</a>
+			</div>
+		</div>
+
+		<div class="relative lg:pb-36 lg:pl-20">
+			<!-- Brand graphic in place of a photo. Swap for a team photo later if you like. -->
+			<div class="relative aspect-[4/3.6] overflow-hidden rounded-2xl bg-navy" aria-hidden="true">
+				<div class="absolute top-0 right-0 h-[58%] w-[38%] bg-turquoise"></div>
+				<div class="absolute right-[38%] bottom-0 h-[30%] w-[22%] bg-[#6b7380]"></div>
+				<div class="absolute right-0 bottom-0 h-[42%] w-[38%] bg-white/10"></div>
+				<Logo size={340} title="" class="absolute top-[34%] left-[30%] -translate-x-1/2 -translate-y-1/2 text-white/90" />
+			</div>
+
+			<figure class="card relative z-10 mx-4 -mt-20 p-5 shadow-[0_24px_60px_-24px_rgba(17,24,39,0.35)] sm:mx-8 lg:absolute lg:bottom-0 lg:left-0 lg:m-0 lg:w-[22rem]">
+				<figcaption class="text-[13px] text-subtle">An automation at work · Sales</figcaption>
+				<div class="mt-2 flex items-baseline justify-between gap-4">
+					<p class="font-semibold">New inbound lead</p>
+					<span class="text-sm font-semibold text-subtle">CRM</span>
+				</div>
+				<p class="text-[13px] text-subtle">Website form · Example run</p>
+				<ol class="mt-3 divide-y divide-line border-t border-line text-[15px]">
+					{run.map((step, i) => (
+						<li class="run-step flex items-center gap-3 py-2.5" style={`--i:${i}`}>
+							<svg viewBox="0 0 16 16" class="size-4 shrink-0 text-ink" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d={check} /></svg>
+							<span class="flex-1">{step.label}</span>
+							<span class="text-[13px] text-subtle">{step.detail}</span>
+						</li>
+					))}
+				</ol>
+			</figure>
+		</div>
 	</section>
+
+	<!-- Audiences -->
+	<section aria-labelledby="audience-title" class="container-page pb-20">
+		<h2 id="audience-title" class="h-section">Built for teams like yours.</h2>
+		<ul class="mt-8 flex flex-wrap gap-2.5">
+			{audiences.map((a) => <li class="chip">{a}</li>)}
+		</ul>
+		<a href="#faq" class="link-arrow mt-8">Not sure you fit? Read the FAQ <span aria-hidden="true">→</span></a>
+	</section>
+
+	<!-- Problem -->
+	<section aria-labelledby="problem-title" class="section">
+		<div class="container-page grid gap-12 lg:grid-cols-2 lg:gap-16">
+			<div>
+				<h2 id="problem-title" class="h-section">
+					More tools. More tabs.<br />Less time.
+				</h2>
+				<p class="lead mt-6 max-w-lg">
+					More customers, more tools, more hours lost to copy and paste. Your team wasn’t hired for that. We fix it.
+				</p>
+			</div>
+			<ul class="border-b border-line">
+				{problems.map((p) => (
+					<li class="grid gap-3 border-t border-line py-7 sm:grid-cols-2 sm:gap-8">
+						<p class="text-lg font-semibold">{p.pain}</p>
+						<p class="text-muted">{p.answer}</p>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<!-- Platform -->
+	<section id="platform" aria-labelledby="platform-title" class="section">
+		<div class="container-page">
+			<div class="flex flex-wrap items-end justify-between gap-6">
+				<div class="max-w-2xl">
+					<h2 id="platform-title" class="h-section">One foundation for every automation.</h2>
+					<p class="lead mt-5">Triggers, AI, approvals and logs, built the same way every time. Click any part to see what it does.</p>
+				</div>
+				<a href={CTA.href} class="link-arrow">Talk to us <span aria-hidden="true">→</span></a>
+			</div>
+
+			<div class="mt-12 grid gap-6 lg:grid-cols-[1.45fr_1fr]" data-layers>
+				<div class="grid gap-3">
+					<button type="button" data-layer="triggers" class="layer-tile">
+						<span class="font-semibold">{layers.triggers.title}</span><span>{layers.triggers.sub}</span>
+					</button>
+					<div class="grid gap-3 sm:grid-cols-[1fr_9rem]">
+						<div class="rounded-2xl border border-ink bg-paper p-3 sm:p-4">
+							<p class="flex items-center gap-2 px-1 pb-3 text-[15px]">
+								<svg viewBox="0 0 16 16" class="size-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d={check} /></svg>
+								<span class="font-semibold">Center workflow</span>
+								<span class="text-[13px] text-subtle">built, tested, documented</span>
+							</p>
+							<div class="grid gap-3 sm:grid-cols-3">
+								{(['ai', 'approvals', 'actions'] as LayerKey[]).map((key) => (
+									<button type="button" data-layer={key} class="layer-tile">
+										<span class="font-semibold">{layers[key].title}</span><span>{layers[key].sub}</span>
+									</button>
+								))}
+							</div>
+							<button type="button" data-layer="logs" class="layer-tile mt-3 w-full">
+								<span class="font-semibold">{layers.logs.title}</span><span>{layers.logs.sub}</span>
+							</button>
+						</div>
+						<button type="button" data-layer="connections" class="layer-tile sm:justify-end">
+							<span class="font-semibold">{layers.connections.title}</span><span>{layers.connections.sub}</span>
+						</button>
+					</div>
+					<button type="button" data-layer="foundation" class="layer-tile">
+						<span class="font-semibold">{layers.foundation.title}</span><span>{layers.foundation.sub}</span>
+					</button>
+				</div>
+
+				<div class="card self-start p-7 sm:p-9" aria-live="polite">
+					{(Object.keys(layers) as LayerKey[]).map((key) => (
+						<div data-panel={key} hidden={key !== defaultLayer}>
+							<h3 class="text-[1.75rem] font-semibold tracking-[-0.01em]">{layers[key].title}</h3>
+							<p class="mt-3 text-lg">{layers[key].headline}</p>
+							<ul class="mt-6 space-y-4">
+								{layers[key].points.map((pt) => (
+									<li class="flex gap-3">
+										<svg viewBox="0 0 16 16" class="mt-1 size-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d={check} /></svg>
+										{pt}
+									</li>
+								))}
+							</ul>
+						</div>
+					))}
+					<p class="mt-8 text-sm text-subtle">Click another part to explore.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Services -->
+	<section id="services" aria-labelledby="services-title" class="section">
+		<div class="container-page">
+			<div class="flex flex-wrap items-end justify-between gap-6">
+				<div class="max-w-2xl">
+					<h2 id="services-title" class="h-section">What we automate.</h2>
+					<p class="lead mt-5">Automations for the teams that own the work. Each one starts in review mode and earns the right to act.</p>
+				</div>
+				<a href={CTA.href} class="link-arrow">Find your first win <span aria-hidden="true">→</span></a>
+			</div>
+			<div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+				{services.map((s) => (
+					<article class="card p-7">
+						<h3 class="text-xl font-semibold">{s.team}</h3>
+						<p class="mt-2 text-muted">{s.outcome}</p>
+						<ul class="mt-5 divide-y divide-line border-t border-line text-[15px]">
+							{s.items.map((item) => <li class="py-3">{item}</li>)}
+						</ul>
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- Process -->
+	<section id="process" aria-labelledby="process-title" class="section">
+		<div class="container-page">
+			<h2 id="process-title" class="h-section">Live in weeks, not months.</h2>
+			<p class="lead mt-5">One workflow, one owner on your side, one number to move.</p>
+			<ol class="mt-12 grid gap-x-6 gap-y-10 border-t border-ink pt-7 sm:grid-cols-2 lg:grid-cols-5">
+				{steps.map((s) => (
+					<li>
+						<p class="text-sm font-semibold text-accent">{s.when}</p>
+						<h3 class="mt-3 text-xl font-semibold">{s.title}</h3>
+						<p class="mt-2 text-[15px] text-muted">{s.text}</p>
+					</li>
+				))}
+			</ol>
+		</div>
+	</section>
+
+	<!-- Why us -->
+	<section id="why" aria-labelledby="why-title" class="section">
+		<div class="container-page">
+			<h2 id="why-title" class="h-section">Why Center Automation.</h2>
+			<div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+				{reasons.map((r) => (
+					<div class="card p-7">
+						<h3 class="text-xl font-semibold">{r.title}</h3>
+						<p class="mt-3 text-muted">{r.text}</p>
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- Stack -->
+	<section aria-labelledby="stack-title" class="section">
+		<div class="container-page">
+			<h2 id="stack-title" class="h-section">Works with what you run.</h2>
+			<p class="lead mt-5 max-w-2xl">Your apps, your accounts, your data. We fit the tools you have today.</p>
+			<div class="mt-12 grid border-t border-line md:grid-cols-3">
+				{stack.map((group, i) => (
+					<div class:list={['py-8 md:pr-8', i > 0 && 'border-t border-line md:border-t-0 md:border-l md:pl-8']}>
+						<h3 class="text-lg font-semibold">{group.title}</h3>
+						<ul class="mt-5 flex flex-wrap gap-2">
+							{group.main.map((t) => <li class="chip border-accent text-accent">{t}</li>)}
+							{group.rest.map((t) => <li class="chip">{t}</li>)}
+						</ul>
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- FAQ -->
+	<section id="faq" aria-labelledby="faq-title" class="section">
+		<div class="container-page grid gap-10 lg:grid-cols-[1fr_1.6fr]">
+			<div>
+				<h2 id="faq-title" class="h-section">Good questions.</h2>
+				<p class="lead mt-5">Anything else? <a href="#demo" class="text-accent underline underline-offset-4">Send us a message</a> and a person will answer.</p>
+			</div>
+			<div class="border-b border-line">
+				{faqs.map((f) => (
+					<details class="group border-t border-line py-6">
+						<summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-semibold [&::-webkit-details-marker]:hidden">
+							{f.q}
+							<span class="text-2xl font-normal text-subtle transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+						</summary>
+						<p class="mt-3 max-w-2xl text-muted">{f.a}</p>
+					</details>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<DemoSection />
+<style>
+		@reference "../styles/global.css";
+
+		.layer-tile {
+			@apply flex cursor-pointer flex-col items-start gap-1 rounded-xl border border-line bg-paper px-4 py-4 text-left text-[13px] text-subtle transition-colors hover:border-accent;
+		}
+		.layer-tile > span:first-child {
+			@apply text-base text-ink;
+		}
+		.layer-tile[aria-pressed='true'] {
+			@apply border-accent bg-accent-soft;
+		}
+		.layer-tile[aria-pressed='true'] > span:first-child {
+			@apply text-accent;
+		}
+	</style>
+
+	<script>
+		// Interactive "how we build" diagram: pressing a tile shows its panel.
+		const root = document.querySelector('[data-layers]');
+		if (root) {
+			const tiles = root.querySelectorAll<HTMLButtonElement>('[data-layer]');
+			const panels = root.querySelectorAll<HTMLElement>('[data-panel]');
+			const select = (key: string) => {
+				tiles.forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.layer === key)));
+				panels.forEach((p) => (p.hidden = p.dataset.panel !== key));
+			};
+			tiles.forEach((t) => t.addEventListener('click', () => select(t.dataset.layer!)));
+			select(root.querySelector<HTMLElement>('[data-panel]:not([hidden])')?.dataset.panel ?? 'approvals');
+		}
+	</script>
 </BaseLayout>

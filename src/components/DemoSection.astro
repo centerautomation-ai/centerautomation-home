@@ -1,0 +1,308 @@
+---
+import { SITE } from '../consts';
+
+// Country list built at compile time from the runtime's region names.
+const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const skip = new Set(['EU', 'EZ', 'UN', 'QO', 'XA', 'XB', 'ZZ', 'AQ', 'BV', 'HM', 'TF', 'UM', 'IO', 'DG', 'EA', 'IC', 'CP', 'TA', 'AC', 'CQ']);
+const countries = [...letters]
+	.flatMap((a) => [...letters].map((b) => a + b))
+	.filter((code) => !skip.has(code))
+	.map((code) => {
+		try {
+			return regionNames.of(code);
+		} catch {
+			return undefined;
+		}
+	})
+	.filter((name): name is string => Boolean(name) && !/^[A-Z]{2}$/.test(name!) && !/unknown/i.test(name!))
+	.filter((name, i, all) => all.indexOf(name) === i)
+	.sort((a, b) => a.localeCompare(b));
+
+const topics = ['Sales & CRM', 'Customer support', 'Finance & admin', 'Operations', 'Marketing', 'Internal knowledge', 'Workflow audit'];
+const otherTopics = ['Partnership', 'Careers', 'Something else'];
+const sizes = ['1–10 people', '11–50 people', '51–200 people', '201–1,000 people', 'More than 1,000'];
+const stacks = ['Google Workspace', 'Microsoft 365', 'Both', 'Something else', 'Not sure'];
+
+const promises = [
+	'A 30-minute call with an automation specialist',
+	'Your recurring tasks ranked by hours saved',
+	'A clear plan, or a straight answer if we’re not the right fit',
+];
+
+const check = 'M3.5 8.5l3 3 6-7';
+---
+
+<section id="demo" aria-labelledby="demo-title" class="section">
+	<div class="container-page grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
+		<div class="lg:pt-6">
+			<h2 id="demo-title" class="text-5xl leading-[1.05] font-semibold tracking-[-0.025em] sm:text-6xl">Get a demo.</h2>
+			<p class="lead mt-6 max-w-md">
+				Tell us which work you want off your plate. A real person reads every request and replies within two business days.
+			</p>
+			<ul class="mt-8 space-y-4">
+				{promises.map((p) => (
+					<li class="flex gap-3">
+						<svg viewBox="0 0 16 16" class="mt-1 size-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d={check} /></svg>
+						{p}
+					</li>
+				))}
+			</ul>
+			<p class="mt-10 text-[15px] text-muted">
+				Prefer email? <a href={`mailto:${SITE.email}`} class="font-semibold text-ink underline underline-offset-4">{SITE.email}</a>
+			</p>
+			{SITE.bookingUrl && (
+				<a href={SITE.bookingUrl} target="_blank" rel="noopener" class="link-arrow mt-4">
+					Or pick a time directly <span aria-hidden="true">→</span>
+				</a>
+			)}
+		</div>
+
+		<div class="card p-6 sm:p-9">
+			<form
+				class="demo-form grid gap-6"
+				data-demo-form
+				novalidate
+				data-endpoint={SITE.formEndpoint}
+				data-email={SITE.email}
+				action={SITE.formEndpoint || `mailto:${SITE.email}`}
+				method="post"
+				enctype={SITE.formEndpoint ? undefined : 'text/plain'}
+			>
+				<div class="grid gap-6 sm:grid-cols-2">
+					<div>
+						<label for="demo-name">Full name</label>
+						<input id="demo-name" name="name" type="text" autocomplete="name" required />
+					</div>
+					<div>
+						<label for="demo-email">Work email</label>
+						<input id="demo-email" name="email" type="email" autocomplete="email" required />
+					</div>
+					<div>
+						<label for="demo-company">Company</label>
+						<input id="demo-company" name="company" type="text" autocomplete="organization" required />
+					</div>
+					<div>
+						<label for="demo-title">Job title</label>
+						<input id="demo-title" name="job_title" type="text" autocomplete="organization-title" />
+					</div>
+				</div>
+
+				<div>
+					<label for="demo-country">Country</label>
+					<input id="demo-country" name="country" type="text" list="demo-countries" autocomplete="country-name" placeholder="Search countries" />
+					<datalist id="demo-countries">
+						{countries.map((c) => <option value={c} />)}
+					</datalist>
+				</div>
+
+				<fieldset>
+					<legend>What can we help with?</legend>
+					<div class="mt-3 flex flex-wrap gap-2.5">
+						{topics.map((t, i) => (
+							<span class="topic">
+								<input type="checkbox" id={`demo-topic-${i}`} name="topics" value={t} />
+								<label for={`demo-topic-${i}`}>{t}</label>
+							</span>
+						))}
+					</div>
+					<div class="mt-3 flex flex-wrap items-center gap-2">
+						<span class="mr-1 text-[13px] font-semibold text-subtle">Or</span>
+						{otherTopics.map((t, i) => (
+							<span class="topic topic-sm">
+								<input type="checkbox" id={`demo-other-${i}`} name="topics" value={t} />
+								<label for={`demo-other-${i}`}>{t}</label>
+							</span>
+						))}
+					</div>
+				</fieldset>
+
+				<div class="grid gap-6 sm:grid-cols-2">
+					<div>
+						<label for="demo-size">Company size <span class="optional">(optional)</span></label>
+						<select id="demo-size" name="company_size">
+							<option value="">Select</option>
+							{sizes.map((s) => <option>{s}</option>)}
+						</select>
+					</div>
+					<div>
+						<label for="demo-stack">Main workspace <span class="optional">(optional)</span></label>
+						<select id="demo-stack" name="workspace">
+							<option value="">Select</option>
+							{stacks.map((s) => <option>{s}</option>)}
+						</select>
+					</div>
+				</div>
+
+				<div>
+					<label for="demo-phone">Phone <span class="optional">(optional)</span></label>
+					<input id="demo-phone" name="phone" type="tel" autocomplete="tel" />
+				</div>
+
+				<div>
+					<label for="demo-message">Message <span class="optional">(optional)</span></label>
+					<textarea id="demo-message" name="message" rows="5" placeholder="Which task costs your team the most time today?"></textarea>
+				</div>
+
+				<div class="flex items-start gap-3">
+					<input id="demo-news" name="newsletter" type="checkbox" value="yes" class="mt-1 size-4 shrink-0 accent-accent" />
+					<label for="demo-news" class="!mb-0 !font-normal text-[15px] text-muted">
+						Send me Center Automation insights and news by email. I can unsubscribe any time.
+					</label>
+				</div>
+
+				<div>
+					<button type="submit" class="btn-primary disabled:opacity-60" data-submit>Send message</button>
+					<p class="mt-4 hidden text-[15px] text-red-700" role="alert" data-error></p>
+					<p class="mt-4 text-[15px] text-muted">
+						By submitting, you agree that {SITE.name} processes your details to respond to your request.
+					</p>
+					<p class="mt-1 text-[15px] text-muted">
+						Form not working? Email us at <a href={`mailto:${SITE.email}`} class="underline underline-offset-4">{SITE.email}</a>.
+					</p>
+				</div>
+			</form>
+
+			<div class="hidden py-10 text-center" data-success role="status" tabindex="-1">
+				<svg viewBox="0 0 16 16" class="mx-auto size-10 text-accent" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d={check} /></svg>
+				<h3 class="mt-4 text-2xl font-semibold" data-success-title>Thank you. Your request is in.</h3>
+				<p class="mx-auto mt-3 max-w-sm text-muted" data-success-text>We’ll reply within two business days.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	@reference "../styles/global.css";
+
+	.demo-form label,
+	.demo-form legend {
+		@apply mb-2 block text-[15px] font-semibold;
+	}
+	.demo-form .optional {
+		@apply font-semibold text-subtle;
+	}
+	.demo-form input[type='text'],
+	.demo-form input[type='email'],
+	.demo-form input[type='tel'],
+	.demo-form select,
+	.demo-form textarea {
+		@apply w-full rounded-md border border-line bg-paper px-4 py-3 text-base text-ink transition-colors outline-none placeholder:text-subtle hover:border-ink/30 focus:border-accent focus:ring-2 focus:ring-accent/20;
+	}
+	.demo-form select {
+		@apply cursor-pointer;
+	}
+	.demo-form input[aria-invalid='true'] {
+		@apply border-red-600;
+	}
+
+	/* Topic pills: real checkboxes, visually replaced by their labels. */
+	.topic input {
+		@apply sr-only;
+	}
+	.topic label {
+		@apply mb-0 cursor-pointer rounded-full border border-line bg-paper px-4 py-2.5 text-[15px] font-normal transition-colors hover:border-ink/40;
+	}
+	.topic-sm label {
+		@apply px-3 py-2 text-[13px];
+	}
+	.topic input:checked + label {
+		@apply border-accent bg-accent-soft text-accent;
+	}
+	.topic input:focus-visible + label {
+		@apply outline-2 outline-offset-2 outline-accent;
+	}
+</style>
+
+<script>
+	// Demo form: posts to a form service when one is configured, otherwise opens the
+	// visitor's email app with the request prefilled.
+	const form = document.querySelector<HTMLFormElement>('[data-demo-form]');
+	if (form) {
+		const card = form.parentElement!;
+		const success = card.querySelector<HTMLElement>('[data-success]')!;
+		const errorBox = form.querySelector<HTMLElement>('[data-error]')!;
+		const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+		const endpoint = form.dataset.endpoint ?? '';
+		const email = form.dataset.email ?? '';
+
+		const showError = (msg: string) => {
+			errorBox.textContent = msg;
+			errorBox.classList.remove('hidden');
+		};
+
+		const showSuccess = (title?: string, text?: string) => {
+			if (title) card.querySelector('[data-success-title]')!.textContent = title;
+			if (text) card.querySelector('[data-success-text]')!.textContent = text;
+			form.classList.add('hidden');
+			success.classList.remove('hidden');
+			success.focus();
+		};
+
+		const summary = (data: FormData) => {
+			const line = (label: string, key: string) => {
+				const v = data.getAll(key).map(String).filter(Boolean).join(', ');
+				return v ? `${label}: ${v}` : '';
+			};
+			return [
+				line('Name', 'name'),
+				line('Email', 'email'),
+				line('Company', 'company'),
+				line('Job title', 'job_title'),
+				line('Country', 'country'),
+				line('Help with', 'topics'),
+				line('Company size', 'company_size'),
+				line('Workspace', 'workspace'),
+				line('Phone', 'phone'),
+				line('Newsletter', 'newsletter'),
+				'',
+				String(data.get('message') ?? ''),
+			]
+				.filter((l, i, all) => l !== '' || (i > 0 && all[i - 1] !== ''))
+				.join('\n')
+				.trim();
+		};
+
+		form.querySelectorAll('input[required]').forEach((el) =>
+			el.addEventListener('input', () => el.removeAttribute('aria-invalid')),
+		);
+
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			errorBox.classList.add('hidden');
+
+			const invalid = [...form.querySelectorAll<HTMLInputElement>('input[required]')].filter((el) => !el.checkValidity());
+			invalid.forEach((el) => el.setAttribute('aria-invalid', 'true'));
+			if (invalid.length) {
+				invalid[0].focus();
+				showError('Please fill in your name, a valid work email and your company.');
+				return;
+			}
+
+			const data = new FormData(form);
+
+			if (!endpoint) {
+				const subject = `Demo request from ${data.get('name')} (${data.get('company')})`;
+				window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(summary(data))}`;
+				showSuccess(
+					'Almost done: check your email app.',
+					`A message to ${email} has been prepared with your details. Press send there and we’ll reply within two business days.`,
+				);
+				return;
+			}
+
+			submit.disabled = true;
+			submit.textContent = 'Sending…';
+			try {
+				const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+				if (!res.ok) throw new Error(String(res.status));
+				showSuccess();
+			} catch {
+				showError(`Your message couldn’t be sent. Please try again, or email us at ${email}.`);
+			} finally {
+				submit.disabled = false;
+				submit.textContent = 'Send message';
+			}
+		});
+	}
+</script>

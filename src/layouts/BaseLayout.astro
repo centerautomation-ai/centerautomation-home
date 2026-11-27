@@ -2,12 +2,42 @@
 import { Font } from 'astro:assets';
 import Seo from '../components/Seo.astro';
 import Logo from '../components/Logo.astro';
-import { SITE } from '../consts';
+import { SITE, CTA, NAV } from '../consts';
 import '../styles/global.css';
 
 type Props = Parameters<typeof Seo>[0];
 
 const year = new Date().getFullYear();
+
+const footerColumns = [
+	{
+		title: 'Services',
+		links: [
+			{ label: 'Sales & CRM', href: '/#services' },
+			{ label: 'Customer support', href: '/#services' },
+			{ label: 'Finance & admin', href: '/#services' },
+			{ label: 'Operations', href: '/#services' },
+			{ label: 'Marketing', href: '/#services' },
+			{ label: 'Internal knowledge', href: '/#services' },
+		],
+	},
+	{
+		title: 'Company',
+		links: [
+			{ label: 'How we build', href: '/#platform' },
+			{ label: 'Process', href: '/#process' },
+			{ label: 'Why us', href: '/#why' },
+			{ label: 'FAQ', href: '/#faq' },
+		],
+	},
+	{
+		title: 'Contact',
+		links: [
+			{ label: SITE.email, href: `mailto:${SITE.email}` },
+			{ label: CTA.label, href: CTA.href },
+		],
+	},
+];
 ---
 
 <!doctype html>
@@ -19,7 +49,7 @@ const year = new Date().getFullYear();
 
 		<Seo {...Astro.props} />
 
-		<Font cssVariable="--font-inter" preload />
+		<Font cssVariable="--font-brand" preload />
 
 		<link rel="icon" href="/favicon.ico" sizes="48x48" />
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -30,25 +60,86 @@ const year = new Date().getFullYear();
 	<body class="flex min-h-screen flex-col">
 		<a
 			href="#main"
-			class="sr-only z-10 bg-ink px-4 py-2 text-paper focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
+			class="sr-only z-50 rounded bg-ink px-4 py-2 text-paper focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
 		>
 			Skip to content
 		</a>
 
-		<header class="flex items-center justify-between px-4 py-4 sm:px-8 lg:px-12">
-			<a href="/" class="inline-flex items-center gap-2.5 font-semibold" aria-label={`${SITE.name} home`}>
-				<Logo size={32} title="" />
-				<span>{SITE.name}</span>
-			</a>
-			<!-- Add <nav aria-label="Primary"> here once the site has more than one page. -->
+		<header class="sticky top-0 z-40 border-b border-transparent bg-canvas/90 backdrop-blur-md transition-colors data-[scrolled]:border-line" data-header>
+			<div class="container-page flex h-[72px] items-center justify-between gap-8">
+				<div class="flex items-center gap-10">
+					<a href="/" class="inline-flex items-center gap-2.5 text-[19px] font-semibold tracking-tight" aria-label={`${SITE.name} home`}>
+						<Logo size={32} title="" class="text-navy" />
+						<span>{SITE.name}</span>
+					</a>
+					<nav aria-label="Primary" class="hidden items-center gap-7 text-[15px] lg:flex">
+						{NAV.map((item) => <a href={`/${item.href}`} class="hover:text-accent">{item.label}</a>)}
+					</nav>
+				</div>
+
+				<div class="flex items-center gap-2">
+					<a href={CTA.href} class="btn-primary hidden sm:inline-flex">{CTA.label}</a>
+
+					<details class="group relative lg:hidden">
+						<summary
+							class="flex size-11 cursor-pointer list-none items-center justify-center rounded-full border border-line bg-paper [&::-webkit-details-marker]:hidden"
+							aria-label="Menu"
+						>
+							<svg viewBox="0 0 24 24" class="size-5 group-open:hidden" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+							<svg viewBox="0 0 24 24" class="hidden size-5 group-open:block" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+						</summary>
+						<nav aria-label="Mobile" class="card absolute right-0 mt-2 flex w-60 flex-col p-2 shadow-xl">
+							{NAV.map((item) => <a href={`/${item.href}`} class="rounded-lg px-3 py-2.5 hover:bg-canvas">{item.label}</a>)}
+							<a href={CTA.href} class="btn-primary mt-2">{CTA.label}</a>
+						</nav>
+					</details>
+				</div>
+			</div>
 		</header>
 
 		<main id="main" class="flex-1">
 			<slot />
 		</main>
 
-		<footer class="px-4 py-4 text-sm text-muted sm:px-8 lg:px-12">
-			<p>&copy; {year} {SITE.name}</p>
+		<footer class="relative overflow-hidden border-t border-line bg-paper">
+			<Logo
+				size={560}
+				title=""
+				class="pointer-events-none absolute -right-24 -bottom-40 text-accent opacity-[0.05]"
+			/>
+			<div class="container-page relative grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+				<div>
+					<a href="/" class="inline-flex items-center gap-2.5 text-[19px] font-semibold tracking-tight">
+						<Logo size={32} title="" class="text-navy" />
+						<span>{SITE.name}</span>
+					</a>
+					<p class="mt-4 max-w-xs text-muted">AI automation for teams that would rather do the work that matters.</p>
+				</div>
+				{footerColumns.map((col) => (
+					<div>
+						<h2 class="text-sm font-semibold text-subtle">{col.title}</h2>
+						<ul class="mt-4 space-y-3">
+							{col.links.map((link) => (
+								<li><a href={link.href} class="break-words hover:text-accent">{link.label}</a></li>
+							))}
+						</ul>
+					</div>
+				))}
+			</div>
+			<div class="container-page relative">
+				<div class="flex flex-wrap justify-between gap-4 border-t border-line py-8 text-sm text-subtle">
+					<p>&copy; {year} {SITE.name}. All rights reserved.</p>
+					<a href={`mailto:${SITE.email}`} class="hover:text-ink">{SITE.email}</a>
+				</div>
+			</div>
 		</footer>
+
+		<script>
+			// Show a hairline under the sticky header once the page scrolls.
+			const header = document.querySelector('[data-header]');
+			const onScroll = () => header?.toggleAttribute('data-scrolled', window.scrollY > 8);
+			onScroll();
+			window.addEventListener('scroll', onScroll, { passive: true });
+		</script>
 	</body>
 </html>

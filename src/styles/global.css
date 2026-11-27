@@ -13,9 +13,12 @@
 	--color-line: #dfe3e9;
 	--color-muted: #4b5563;
 	--color-subtle: #6b7380;
-	--color-accent: #2f48ee;
-	--color-accent-strong: #2236c4;
-	--color-accent-soft: #eef0fe;
+	/* Turquoise. `accent` is dark enough for white button text and links (WCAG AA). */
+	--color-accent: #087884;
+	--color-accent-strong: #06606a;
+	--color-accent-soft: #e2f6f7;
+	/* Bright turquoise for large decorative blocks only, never for text. */
+	--color-turquoise: #19c3cf;
 }
 
 @layer base {

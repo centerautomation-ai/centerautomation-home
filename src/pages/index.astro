@@ -407,36 +407,35 @@ const check = 'M3.5 8.5l3 3 6-7';
 			</div>
 		</div>
 	</section>
-</BaseLayout>
-
 <style>
-	@reference "../styles/global.css";
+		@reference "../styles/global.css";
 
-	.layer-tile {
-		@apply flex cursor-pointer flex-col items-start gap-1 rounded-xl border border-line bg-paper px-4 py-4 text-left text-[13px] text-subtle transition-colors hover:border-accent;
-	}
-	.layer-tile > span:first-child {
-		@apply text-base text-ink;
-	}
-	.layer-tile[aria-pressed='true'] {
-		@apply border-accent bg-accent-soft;
-	}
-	.layer-tile[aria-pressed='true'] > span:first-child {
-		@apply text-accent;
-	}
-</style>
+		.layer-tile {
+			@apply flex cursor-pointer flex-col items-start gap-1 rounded-xl border border-line bg-paper px-4 py-4 text-left text-[13px] text-subtle transition-colors hover:border-accent;
+		}
+		.layer-tile > span:first-child {
+			@apply text-base text-ink;
+		}
+		.layer-tile[aria-pressed='true'] {
+			@apply border-accent bg-accent-soft;
+		}
+		.layer-tile[aria-pressed='true'] > span:first-child {
+			@apply text-accent;
+		}
+	</style>
 
-<script>
-	// Interactive "how we build" diagram: pressing a tile shows its panel.
-	const root = document.querySelector('[data-layers]');
-	if (root) {
-		const tiles = root.querySelectorAll<HTMLButtonElement>('[data-layer]');
-		const panels = root.querySelectorAll<HTMLElement>('[data-panel]');
-		const select = (key: string) => {
-			tiles.forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.layer === key)));
-			panels.forEach((p) => (p.hidden = p.dataset.panel !== key));
-		};
-		tiles.forEach((t) => t.addEventListener('click', () => select(t.dataset.layer!)));
-		select(root.querySelector<HTMLElement>('[data-panel]:not([hidden])')?.dataset.panel ?? 'approvals');
-	}
-</script>
+	<script>
+		// Interactive "how we build" diagram: pressing a tile shows its panel.
+		const root = document.querySelector('[data-layers]');
+		if (root) {
+			const tiles = root.querySelectorAll<HTMLButtonElement>('[data-layer]');
+			const panels = root.querySelectorAll<HTMLElement>('[data-panel]');
+			const select = (key: string) => {
+				tiles.forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.layer === key)));
+				panels.forEach((p) => (p.hidden = p.dataset.panel !== key));
+			};
+			tiles.forEach((t) => t.addEventListener('click', () => select(t.dataset.layer!)));
+			select(root.querySelector<HTMLElement>('[data-panel]:not([hidden])')?.dataset.panel ?? 'approvals');
+		}
+	</script>
+</BaseLayout>
